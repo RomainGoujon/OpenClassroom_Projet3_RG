@@ -425,6 +425,12 @@ figure .modifier {
 	display: block;
 }
 
+.gallerymodal figure {
+	position: relative;
+	overflow: hidden;
+	max-height: 10rem;
+}
+
 .fa-trash-can {
 	font-size: 13px;
 	width: 14%;
@@ -432,6 +438,16 @@ figure .modifier {
 	color: white;
 	padding: 3px;
 	border-radius: 2px;
+	position: absolute;
+	right: 8px;
+	top: 5px;
+}
+
+.deletecheckbox {
+	position: absolute;
+	opacity: 0;
+	right: 8px;
+	top: 5px;
 }
 
 /* Ajout photo */

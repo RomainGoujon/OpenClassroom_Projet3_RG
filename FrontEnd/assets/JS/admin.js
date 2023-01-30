@@ -197,7 +197,9 @@ function renderModalGallery() {
         imageUrl +
         '"alt="' +
         modifiedWork.title +
-        '"> <figcaption> éditer </figcaption> <i class="fa-solid fa-trash-can"> </i></figure>';
+        '"> <figcaption> éditer </figcaption> <input type="checkbox" class="deletecheckbox" id="' +
+        modifiedWork.id + 
+        '"> <i class="fa-solid fa-trash-can"> </i></figure>';
       html += htmlSegment;
     }
   });
