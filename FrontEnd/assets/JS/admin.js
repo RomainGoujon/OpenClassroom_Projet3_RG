@@ -197,9 +197,7 @@ function renderModalGallery() {
         imageUrl +
         '"alt="' +
         modifiedWork.title +
-        '"> <figcaption> éditer </figcaption> <input type="checkbox" class="deleteCheckbox" id="' +
-        modifiedWork.id +
-        '"> <i class="fa-solid fa-trash-can"> </i></figure>';
+        '"> <figcaption> éditer </figcaption> <i class="fa-solid fa-trash-can"> </i></figure>';
       html += htmlSegment;
     }
   });
@@ -210,7 +208,6 @@ function resetAddWork() {
   workImageDetailsContainer.style.display = "flex";
   workImagePreviewContainer.innerHTML = "";
 }
-
 
 // Ouvrir Modal
 modifyGalleryBtn.onclick = function () {

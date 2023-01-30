@@ -426,13 +426,12 @@ figure .modifier {
 }
 
 .fa-trash-can {
+	font-size: 13px;
+	width: 14%;
 	background-color: black;
 	color: white;
-	padding: 3px 5px;
-	border-radius: 3px;
-	position: absolute;
-	right:20px;
-	top: 5px;
+	padding: 3px;
+	border-radius: 2px;
 }
 
 /* Ajout photo */
