@@ -81,6 +81,7 @@ function previewImg() {
       window.sessionStorage.setItem("imgUrl", JSON.stringify(this.result));
     });
     workImageDetailsContainer.style.display = "none";
+    submitWorkBtn.style.backgroundColor = "#1D6154";
   }
   tempImage = workImageBtn.files[0];
 }
@@ -312,7 +313,6 @@ modalAddWorks.addEventListener("submit", function (event) {
     resetAddWork();
   }
 });
-
 
 // Publier changements
 
