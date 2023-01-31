@@ -484,6 +484,7 @@ figure .modifier {
 
 #previewImage {
 	width: 30rem;
+	display: none;
 }
 
 #previewImage img {
