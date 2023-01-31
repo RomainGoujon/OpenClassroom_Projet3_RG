@@ -206,7 +206,7 @@ function renderModalGallery() {
         imageUrl +
         '"alt="' +
         modifiedWork.title +
-        '"> <figcaption> éditer </figcaption> <input type="checkbox" class="deletecheckbox" id="' +
+        '"> <figcaption> éditer </figcaption> <input type="checkbox" class="deleteCheckbox" id="' +
         modifiedWork.id + 
         '"> <i class="fa-solid fa-trash-can"> </i></figure>';
       html += htmlSegment;
@@ -281,10 +281,8 @@ modalGalleryContainer.onclick = function () {
       deleteWork(deleteCheckbox[i].id);
     }
   }
-  //
   let fff = modifiedWorks.length - 1;
-  console.log(modifiedWorks, modifiedWorks[fff].id);
-  //
+    console.log(modifiedWorks, modifiedWorks[fff].id);
   renderModalGallery();
 };
 
@@ -320,7 +318,7 @@ modalAddWorks.addEventListener("submit", function (event) {
 
 // Changement couleur bouton valider sur ajout de photo
 
-if (Title !=="" && CategoryId !== "" && imageUrl !=="") {
+if (Title !=="" && categoryId !== "" && imageUrl !=="") {
   submitWorkBtn.style.backgroundColor = "#1D6154";
 } else {
   submitWorkBtn.style.backgroundColor = "#A7A7A7";

@@ -443,7 +443,7 @@ figure .modifier {
 	top: 5px;
 }
 
-.deletecheckbox {
+.deleteCheckbox {
 	position: absolute;
 	opacity: 0;
 	right: 8px;
