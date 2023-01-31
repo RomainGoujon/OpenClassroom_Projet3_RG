@@ -452,7 +452,7 @@ figure .modifier {
 	z-index: 25;
 }
 
-/* Ajout photo */
+/* Nav Modal */
 
 .navModal {
 	display: flex;
@@ -464,6 +464,8 @@ figure .modifier {
 	color: black;
 	font-size: 25px;
 }
+
+/* Ajout photo */
 
 .AjoutImageContainer {
 	display: flex;
@@ -487,7 +489,6 @@ figure .modifier {
 #previewImage img {
 	max-width: 100%;
 	max-height: 100%;
-	display: none;
 }
 
 #previewdetails {

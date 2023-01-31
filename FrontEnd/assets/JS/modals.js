@@ -7,7 +7,6 @@ let userData = JSON.parse(window.sessionStorage.getItem("userID"));
 
 const exitModalBtn = document.getElementsByClassName("fermer");
 const returnModalBtn = document.getElementsByClassName("precedent")[0];
-const logOutBtn = document.getElementsByTagName("li")[2];
 const deleteWorksBtn = document.getElementById("supprgalerie");
 const submitWorkBtn = document.getElementById("validerAjout");
 const workImageBtn = document.getElementById("imageUpload");
@@ -21,14 +20,12 @@ const galleryContainer = document.getElementsByClassName("gallery")[0];
 const modalGalleryContainer = document.getElementsByClassName("gallerymodal")[0];
 const workImageDetailsContainer = document.getElementById("previewdetails");
 const workImagePreviewContainer = document.getElementById("previewImage");
-const imageSrc = document.getElementById("image");
 const modalAddWorks = document.getElementById("modalsAjout");
 const modalDeleteWorks = document.getElementById("modalsSuppr");
 const modalsContainer = document.getElementById("modals");
 
 let works;
 let modifiedWorks = [];
-let allWorksLength;
 
 // Variable pour les images temporaire;
 
@@ -132,7 +129,7 @@ async function POSTwork(work) {
       method: work.method,
       headers: {
         Accept: "*/*",
-        Authorization: "Bearer " + userData.token,
+        Authorization: "Bearer" + userData.token,
       },
       body: formDataArray[counter],
     });
@@ -316,13 +313,6 @@ modalAddWorks.addEventListener("submit", function (event) {
   }
 });
 
-// Changement couleur bouton valider sur ajout de photo
-
-if (Title !=="" && categoryId !== "" && imageUrl !=="") {
-  submitWorkBtn.style.backgroundColor = "#1D6154";
-} else {
-  submitWorkBtn.style.backgroundColor = "#A7A7A7";
-}
 
 // Publier changements
 
