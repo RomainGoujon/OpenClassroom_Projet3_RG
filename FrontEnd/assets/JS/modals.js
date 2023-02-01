@@ -1,10 +1,7 @@
 // Variables globales
-
 const apiUrl = "http://localhost:5678/api";
-let userData = JSON.parse(window.sessionStorage.getItem("userID"));
 
 // Variable pour les bouttons
-
 const exitModalBtn = document.getElementsByClassName("fermer");
 const returnModalBtn = document.getElementsByClassName("precedent")[0];
 const deleteWorksBtn = document.getElementById("supprgalerie");
@@ -15,7 +12,6 @@ const addWorkBtn = document.getElementById("AjoutPhoto");
 const publishChangesBtn = document.getElementById("changements");
 
 // Variable pour les contenants
-
 const galleryContainer = document.getElementsByClassName("gallery")[0];
 const modalGalleryContainer = document.getElementsByClassName("gallerymodal")[0];
 const workImageDetailsContainer = document.getElementById("previewdetails");
@@ -28,12 +24,15 @@ let works;
 let modifiedWorks = [];
 
 // Variable pour les images temporaire;
-
 let tempImage;
 let formDataArray = [];
 
-// Récupération des données
+// Récupération du token
+function getToken() {
+  return localStorage.getItem("token");
+}
 
+// Récupération des données
 async function getAllWorks() {
   try {
     let res = await fetch(apiUrl + "/works");
@@ -52,7 +51,6 @@ function getCategoryId() {
 }
 
 // Initialisation des données  
-
 async function initializeWorks() {
   works = await getAllWorks();
   works.forEach((work) => {
@@ -70,7 +68,6 @@ async function initializeWorks() {
 initializeWorks();
 
 // Modifs temporaires
-
 function previewImg() {
   let files = workImageBtn.files[0];
   if (files) {
@@ -117,7 +114,6 @@ function pushIntoFormDataArray(tempFormData) {
 }
 
 // Publier ou supprimer des projets
-
 async function POSTwork(work) {
   let counter = 0;
   for (let i = 0; i < formDataArray.length; i++) {
@@ -130,13 +126,13 @@ async function POSTwork(work) {
     await fetch(apiUrl + "/works", {
       method: work.method,
       headers: {
-        Accept: "*/*",
-        Authorization: "Bearer" + userData.token,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
       },
       body: formDataArray[counter],
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
 
@@ -144,9 +140,9 @@ async function DELETEwork(work) {
   try {
     await fetch(apiUrl + "/works/" + work.id, {
       method: work.method,
-      headers: {
-        Accept: "*/*",
-        Authorization: "Bearer" + userData.token,
+      headers: { 
+       "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
       },
     });
   } catch (error) {
@@ -165,7 +161,6 @@ async function applyChanges() {
 }
 
 // Rendu des galeries
-
 function renderGallery() {
   let html = "";
   let htmlSegment = "";
@@ -220,7 +215,6 @@ function resetAddWork() {
 }
 
 // Ouvrir Modal
-
 modifyGalleryBtn.onclick = function () {
   modalsContainer.style.display = "block";
   modalDeleteWorks.style.display = "flex";
@@ -233,7 +227,6 @@ addWorkBtn.onclick = function () {
 };
 
 // Fermer modals
-
 exitModalBtn[0].onclick = function () {
   modalsContainer.style.display = "none";
   modalDeleteWorks.style.display = "none";
@@ -261,7 +254,6 @@ window.onclick = function (event) {
 };
 
 // Fleche précédent
-
 returnModalBtn.onclick = function () {
   modalAddWorks.style.display = "none";
   modalDeleteWorks.style.display = "flex";
@@ -270,7 +262,6 @@ returnModalBtn.onclick = function () {
 };
 
 // Supprimer des photos
-
 modalGalleryContainer.onclick = function () {
     console.log("cliked");
   let deleteCheckbox = document.getElementsByClassName("deleteCheckbox");
@@ -280,45 +271,42 @@ modalGalleryContainer.onclick = function () {
       deleteWork(deleteCheckbox[i].id);
     }
   }
+  //
   let fff = modifiedWorks.length - 1;
-    console.log(modifiedWorks, modifiedWorks[fff].id);
+  console.log(modifiedWorks, modifiedWorks[fff].id);
+  //
   renderModalGallery();
 };
 
 deleteWorksBtn.onclick = function () {
   for (let i = 0; i <= modifiedWorks.length; i++) {
-    deleteWork(modifiedWorks[i].id);
+    deleteWork(modifiedWorks[i].Id);
   }
   renderModalGallery();
 };
 
 //Preview des photos que l'on va poster
-
 workImageBtn.onchange = function () {
   previewImg(this);
 };
 
 // Ajouter des photos
-
 modalAddWorks.addEventListener("submit", function (event) {
-    console.log("clicked");
+    //console.log("clicked");
   event.preventDefault();
   let title = getTitle();
   let categoryId = getCategoryId();
   let imageUrl = sessionStorage.getItem("imgUrl");
   imageUrl = imageUrl.replaceAll('"', "");
   if (title != "" && imageUrl != "") {
-    tempFormData = new FormData(this);
+    TempFormData = new FormData(this);
     addWork(imageUrl, title, categoryId);
-    pushIntoFormDataArray(tempFormData);
+    pushIntoFormDataArray(TempFormData);
     resetAddWork();
   }
 });
 
 // Publier changements
-
 publishChangesBtn.onclick = function () {
   applyChanges();
 };
-
-

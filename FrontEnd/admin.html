@@ -88,7 +88,7 @@
 		</div>
 
 		<!-- Ajout Photo-->
-		<div id="modalsAjout">
+		<form id="modalsAjout">
 			<nav class="navModal">
 				<div class="precedent">
 					<i class="fa-solid fa-arrow-left-long"></i>
@@ -98,7 +98,7 @@
 				</div>
 			</nav>
 
-			<form class="AjoutImageContainer">
+			<div class="AjoutImageContainer">
 				<h2>Ajout photo</h2>
 
 					<div class="AjoutPhotoContainer">
@@ -110,7 +110,7 @@
 						<div id="previewdetails">
 							<i class="fa-regular fa-image"></i>
 							<label for="imageUpload" id="btnImage">+ Ajouter photo</label>
-							<input type="file" accept="img/jpg, img/png" id="imageUpload">
+							<input type="file" accept=".png, .jpg, .jpeg" id="imageUpload">
 							<span>jpg, png : 4mo max</span>
 						</div>
 					</div>
@@ -129,9 +129,9 @@
 				<hr>
 
 				<input type="submit" value="Valider" id="validerAjout">
-			</form>
+			</div>
 	
-		</div>
+		</form>
 	</section>
 
 	<section id="contact">
@@ -159,7 +159,6 @@
 </footer>
 
 <script src="./assets/JS/modals.js"></script>
-
 </body>
 
 </html>
