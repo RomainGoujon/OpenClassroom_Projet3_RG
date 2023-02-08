@@ -1,8 +1,8 @@
-// Lien serveur pour page HTML
+/// Lien serveur pour page HTML
 const worksURL = "http://localhost:5678/api/works";
 const categoriesURL = "http://localhost:5678/api/categories";
 
-// Variable communeconst
+// Variable commune const
 const gallery = document.getElementsByClassName("gallery")[0];
 let works;
 
@@ -12,7 +12,7 @@ function resetDOM(element) {
 }
 
 // Récupération de tous les projets par le serveur
-async function getWorks() {
+async function displayWork() {
     await fetch(worksURL)
     .then(function(response) {
         if (response.ok) {
@@ -121,7 +121,7 @@ function filtersCategories(works, categoryId, element) {
 }
 
 // Execution des fonctions
-const promiseWorks = getWorks()
+const promiseWorks = displayWork()
 .then(function() {
     addAllWorks(works, gallery);
     return works;
@@ -139,3 +139,4 @@ const promiseWorks = getWorks()
 .catch(function(error) {
     console.log(error);
 });
+

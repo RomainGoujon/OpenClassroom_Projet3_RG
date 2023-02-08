@@ -8,6 +8,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
+    <script src="https://kit.fontawesome.com/8048b682c0.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="./assets/style.css">
 </head>
 
@@ -25,12 +26,16 @@
 </header>
 
 <main class="main-login">
+        <div id="msg-error">
+            <i class="fa-sharp fa-solid fa-triangle-exclamation"></i>
+            <h3>Erreur dans l’identifiant ou le mot de passe</h3>
+        </div>
         <h2>Log In</h2>
         <form class="form-login" method="post">
             <label for="email">E-mail</label>
-            <input class="email-password" type="email" name="email" required/>
+            <input id="email" type="email" name="email" required/>
             <label for="pass">Mot de passe</label>
-            <input class="email-password" type="password" name="password" required/>
+            <input id="password" type="password" name="password" required/>
             <input type="submit" name="submit-login" value="Se connecter"/>
         </form>
         <a href="#">Mot de passe oublié</a>     
@@ -43,6 +48,8 @@
 		</ul>
 	</nav>
 </footer>
+
+<script src="./assets/JS/function.js"></script>
 <script src="./assets/JS/login.js"></script>
 </body>
 </html>
