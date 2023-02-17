@@ -41,6 +41,7 @@ function addAllWorks(works, element) {
 function addWork(works, element, title) {
 
     let figure = document.createElement("figure");
+    figure.setAttribute("data-id", works.id);
     let img = document.createElement("img");
     let figcaption = document.createElement("figcaption");
 

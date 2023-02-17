@@ -5,7 +5,6 @@ const apiUrl = "http://localhost:5678/api";
 const modalDeleteWork = document.querySelector("#modalsSuppr");
 const openGalleryModalBtn = document.querySelector("#projectEdit");
 const closeGalleryModalBtn = document.querySelector("#fermer-suppr");
-const deleteWorksBtn = document.querySelector("#supprgalerie");
 
 // Variables pour la modal ajout de projets
 const modalAddWork = document.querySelector("#modalsAjout");
@@ -74,6 +73,9 @@ window.onclick = function (event) {
     }
 }
 
+// Variable pour controler les ajouts ou suppression
+let action = null;
+
 // Supprimer des photos
 async function deleteWork(id) {
     const response = await fetch(apiUrl + "/works/{id}", {
@@ -84,10 +86,12 @@ async function deleteWork(id) {
             "Content-Type": "application/json",
         },
     });
+    console.log(response);
     if (response.ok) {
     // Supprimer l'élément correspondant dans le DOM
         const element = document.querySelector(`[data-id="${id}"]`);
         element.remove();
+        action = "delete";
     } else {
         console.log(`Erreur lors de la suppression du travail avec ID ${id}`);
     }
@@ -95,14 +99,15 @@ async function deleteWork(id) {
 
 // Fonction pour envoyer les données de la photo
 async function sendWorkData(data) {
-
+    console.log("avant envoie api");
     const response = await fetch(apiUrl + "/works", {
         method: "POST",
         headers: {
             Authorization: `Bearer ${getToken()}`
         },
-        body: JSON.stringify(data),
+        body: data,
     });
+    console.log("Apres reponse api");
     return response.json();
 }
 
@@ -112,8 +117,8 @@ async function handleFormSubmit(event) {
 
     // Vérifier que tous les champs obligatoires sont remplis
     if (!addProjectForm.checkValidity()) {
-    alert("Veuillez remplir tous les champs obligatoires.");
-    return;
+        alert("Veuillez remplir tous les champs obligatoires.");
+        return;
     }
 
     // Récupérer les valeurs du formulaire
@@ -131,6 +136,7 @@ async function handleFormSubmit(event) {
     try {
         const response = await sendWorkData(formData);
         console.log(response);
+        action = "add";
     } catch (error) {
         console.error("Erreur :", error);
     }
@@ -162,3 +168,17 @@ function uploadImage() {
         projectUpload.appendChild(image);
     }
 }
+
+// Bouton pour publier les changements sur le site
+publishChangesBtn.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    if (action === "delete") {
+        deleteChanges();
+    } else if (action === "add") {
+        addChanges();
+    }
+
+    closeAddWorkModal();
+    closeGalleryModal();
+});

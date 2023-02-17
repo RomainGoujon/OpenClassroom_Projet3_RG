@@ -43,9 +43,7 @@ localStorage.setItem("token", data.token);
 console.log(`Le token est : ${data.token}`);
 
 
-// Délai de 3 secondes pour afficher la valeur du token dans la console
-setTimeout(() => {
-    // Redirection vers la page d'accueil
-    window.location.href = "index.html";
-}, 3000);
+
+// Redirection vers la page d'accueil
+window.location.href = "index.html";
 }

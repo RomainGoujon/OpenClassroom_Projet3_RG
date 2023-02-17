@@ -22,3 +22,14 @@ function getTitle() {
 function getCategoryId() {
   return document.getElementById("selectCategorie").value;
 }
+
+// Fonction pour appliquer les changements fait
+function deleteChanges() {
+  // Code pour supprimer les changements
+  console.log("Supprimer les photos");
+}
+
+function addChanges() {
+  // Code pour ajouter les changements
+  console.log("Ajouter les photos");
+}
