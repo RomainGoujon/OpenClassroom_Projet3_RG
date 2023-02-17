@@ -1,10 +1,11 @@
-/// Lien serveur pour page HTML
+// Lien serveur pour page HTML
 const worksURL = "http://localhost:5678/api/works";
 const categoriesURL = "http://localhost:5678/api/categories";
 
 // Variable commune const
 const gallery = document.getElementsByClassName("gallery")[0];
 let works;
+const galleryModal = document.querySelector(".gallerymodal");
 
 // Suppression des tous les projets dans le DOM
 function resetDOM(element) {
@@ -124,6 +125,7 @@ function filtersCategories(works, categoryId, element) {
 const promiseWorks = displayWork()
 .then(function() {
     addAllWorks(works, gallery);
+    addAllWorks(works, galleryModal);
     return works;
 })
 
@@ -140,3 +142,83 @@ const promiseWorks = displayWork()
     console.log(error);
 });
 
+// Ajout des projets sur la boite modale
+function addWorkModal(work, element) {
+    let figure = document.createElement("figure");
+    let img = document.createElement("img");
+    let figcaption = document.createElement("figcaption");
+    let deleteBtn = document.createElement("i");
+
+    // Ajout des images et des titres sur la boîte modale
+    element.appendChild(figure).appendChild(img)
+    .setAttribute("src", work.imageUrl);
+
+    img.setAttribute("alt", work.title);
+    img.setAttribute("crossorigin", "anonymous");
+    figure.appendChild(figcaption)
+    .innerHTML = work.title;
+
+    // Ajout des boutons pour supprimer
+    figure.appendChild(deleteBtn)
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.classList.add("fas");
+    deleteBtn.classList.add("fa-trash-can");
+
+    return figure;
+}
+
+async function renderModalGallery() {
+    // Supprime les projets existants dans la boîte modale
+    resetDOM(galleryModal);
+
+    // Récupération des projets pour la galerie modale
+    await fetch(worksURL)
+    .then(function(response) {
+        if (response.ok) {
+            return response.json();
+        }
+    })
+    .then(function(works) {
+        works.forEach(work => {
+            // Figure qui contient les projets
+            let modalFigure = document.createElement("figure");
+            modalFigure.setAttribute("data-id", work.id);
+
+            // Image pour les projets
+            let modalImg = document.createElement("img");
+            modalImg.setAttribute("src", work.imageUrl);
+            modalImg.setAttribute("alt", work.title);
+            modalImg.setAttribute("crossorigin", "anonymous");
+
+            // Ajout de l'image à la figure
+            modalFigure.appendChild(modalImg);
+
+            // Ajout de la légende à la figure 
+            modalFigure.appendChild(document.createElement("figcaption")).innerHTML = "éditer";
+
+            // Créer l'icone de la poubelle pour supprimer
+            let trashIcon = document.createElement("i");
+            trashIcon.classList.add("fa-solid", "fa-trash-can");
+            modalFigure.appendChild(trashIcon);
+
+            // Ajouter un événement de suppression de projet sur l'icône de la poubelle
+            trashIcon.addEventListener("click", async function () {
+
+                // Récupérer l'ID du projet en utilisant son attribut data-id
+                const id = modalFigure.getAttribute("data-id");
+
+                // Demander à l'utilisateur de confirmer la suppression
+                if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+
+                    // Supprimer le projet en utilisant son ID
+                    await deleteWork(id);
+                }
+            });
+
+            galleryModal.appendChild(modalFigure);
+        });
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}

@@ -4,7 +4,8 @@ function getUserId() {
 }
 
 function getToken() {
-    return localStorage.getItem("token");
+  const token = localStorage.getItem("token");
+  return token;
 }
 
 // Fonction pour voir si l'utilisateur est connecté
@@ -18,14 +19,6 @@ function getTitle() {
   return document.getElementById("titreAjout").value;
 }
 
-function getCategoryId() {
-  return document.getElementById("selectCategorie").value;
-}
-
-// Fonctions pour l'ajout de titre et catégories
-function getTitle() {
-  return document.getElementById("titreAjout").value;
-}
 function getCategoryId() {
   return document.getElementById("selectCategorie").value;
 }

@@ -40,10 +40,12 @@ function connecting(data) {
 localStorage.setItem("userId", data.userId);
 localStorage.setItem("token", data.token);
 
-// Redirection vers la page d'accueil
-window.location.href = "index.html";
+console.log(`Le token est : ${data.token}`);
+
+
+// Délai de 3 secondes pour afficher la valeur du token dans la console
+setTimeout(() => {
+    // Redirection vers la page d'accueil
+    window.location.href = "index.html";
+}, 3000);
 }
-
-
-
-

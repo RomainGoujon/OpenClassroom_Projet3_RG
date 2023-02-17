@@ -19,70 +19,14 @@ const backgroundModal = document.querySelector("#modals");
 // Variables pour upload une image
 const uploadImageInput = document.querySelector("#imageUpload");
 const projectUpload = document.querySelector("#previewImage");
-const uploadUnit = document.querySelector("#previewdetails");
+const uploadContent = document.querySelector("#previewdetails");
 const submitProjet = document.querySelector("#validerAjout");
 
 const addProjectForm = document.querySelector("#ajout-form");
 
-// Autres variables 
-let tempImage;
-let formDataArray = [];
-let modifiedWorks = [];
-const galleryModal = document.getElementsByClassName("gallerymodal")[0];
-
 // Bouton pour appliquer les changements
 const publishChangesBtn = document.querySelector("#changements");
 
-// Récupération des données pour la galerie modal
-async function getAllWorks(){
-    try {
-        let res = await fetch(apiUrl + "/works");
-        return await res.json();
-    } catch (error) {
-        console.log(error);
-    }
-} 
-
-// Initialisation des données  
-async function initializeWorks() {
-    works = await getAllWorks();
-    works.forEach((work) => {
-    let tempWork = {
-        id: work.id,
-        imageUrl: work.imageUrl,
-        title: work.title,
-        categoryId: work.category.id,
-        method: "INITIAL",
-    };
-    modifiedWorks.push(tempWork);
-});
-}
-initializeWorks();
-
-function renderModalGallery() {
-    let html = "";
-    let htmlSegment = "";
-    let imageUrl = "";
-    modifiedWorks.forEach((modifiedWork) => {
-        if (modifiedWork.method != "DELETE") {
-        imageUrl = modifiedWork.imageUrl.replace(
-            "http://localhost:5678",
-            "../Backend"
-        );
-        htmlSegment =
-            '<figure> <img src="' +
-            imageUrl +
-            '"alt="' +
-            modifiedWork.title +
-            '"> <figcaption> éditer </figcaption> <input type="checkbox" class="deleteCheckbox" id="' +
-            modifiedWork.id + 
-            '"> <i class="fa-solid fa-trash-can"> </i></figure>';
-        html += htmlSegment;
-        }
-    });
-    galleryModal.innerHTML = html;
-}
-  
 // Fonction pour ouvrir modal galerie pour supprimer un projet et celle pour ajouter un projet
 function openGalleryModal() {
     modalDeleteWork.style.display = "flex";
@@ -130,156 +74,91 @@ window.onclick = function (event) {
     }
 }
 
-// Supprimer un projet
-function deleteWork(index) {
-    for (let i = 0; i < modifiedWorks.length; i++) {
-      if (modifiedWorks[i].id == index) {
-        modifiedWorks[i].method = "DELETE";
-      }
+// Supprimer des photos
+async function deleteWork(id) {
+    const response = await fetch(apiUrl + "/works/{id}", {
+        method: "DELETE",
+        headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "application/json",
+        },
+    });
+    if (response.ok) {
+    // Supprimer l'élément correspondant dans le DOM
+        const element = document.querySelector(`[data-id="${id}"]`);
+        element.remove();
+    } else {
+        console.log(`Erreur lors de la suppression du travail avec ID ${id}`);
     }
 }
 
-async function DELETEWork(work) {
+// Fonction pour envoyer les données de la photo
+async function sendWorkData(data) {
+
+    const response = await fetch(apiUrl + "/works", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(data),
+    });
+    return response.json();
+}
+
+// Fonction pour gérer l'envoi du formulaire
+async function handleFormSubmit(event) {
+    event.preventDefault();
+
+    // Vérifier que tous les champs obligatoires sont remplis
+    if (!addProjectForm.checkValidity()) {
+    alert("Veuillez remplir tous les champs obligatoires.");
+    return;
+    }
+
+    // Récupérer les valeurs du formulaire
+    const title = addProjectForm.querySelector("#titreAjout").value;
+    const category = addProjectForm.querySelector("#selectCategorie").value;
+    const file = uploadImageInput.files[0];
+
+    // Créer un objet FormData pour envoyer les données
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("image", file);
+
+    // Envoyer les données et afficher la réponse
     try {
-        await fetch(apiUrl + "/works/" + work.id, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-                "Content-Type": "application/json",
-            },
-        })
-        .then(response => {
-            if (response.ok) {
-                elements.forEach(elements => {
-                    elements.remove();
-                });
-            }
-        })
-        .catch(error => {
-            throw new Error(error);
-        });
-    } catch(error) {
-        console.log(error)
+        const response = await sendWorkData(formData);
+        console.log(response);
+    } catch (error) {
+        console.error("Erreur :", error);
     }
 }
 
-galleryModal.onclick = function () {
-    console.log("cliked");
-  let deleteCheckbox = document.getElementsByClassName("deleteCheckbox");
-  for (let i = 0; i < deleteCheckbox.length; i++) {
-    if (deleteCheckbox[i].checked) {
-      console.log("cliked2");
-      deleteWork(deleteCheckbox[i].id);
-    }
-  }
-  //
-  let fff = modifiedWorks.length - 1;
-  console.log(modifiedWorks, modifiedWorks[fff].id);
-  //
-  renderModalGallery();
-};
-
-deleteWorksBtn.onclick = function () {
-  for (let i = 0; i <= modifiedWorks.length; i++) {
-    deleteWork(modifiedWorks[i].Id);
-  }
-  renderModalGallery();
-};
-
-// Ajout des photos
-function addNewWork(inputPhoto, inputTitle, inputCategory) {
-    let worksLenght = modifiedWorks.length - 1;
-    let inputId = modifiedWorks[worksLenght].id + 1;
-    let tempWork = {
-      id: inputId,
-      imageUrl: inputPhoto,
-      title: inputTitle,
-      categoryId: inputCategory,
-      method: "POST",
-    };
-    modifiedWorks.push(tempWork);
-}
-
-function pushIntoFormDataArray(tempFormData) {
-    let worksLenght = modifiedWorks.length - 1;
-    let inputId = modifiedWorks[worksLenght].id;
-    tempFormData.append("image", tempImage);
-    tempFormData.append("id", inputId);
-    formDataArray.push(tempFormData);
-}
-
+// Ajout des événements pour gérer l'upload de photos
 uploadImageInput.addEventListener("change", function () {
     uploadImage();
 });
 
+addProjectForm.addEventListener("submit", handleFormSubmit);
+
+// Fonction pour afficher l'aperçu de l'image
 function uploadImage() {
     if (uploadImageInput.files && uploadImageInput.files[0]) {
         const reader = new FileReader();
         const image = new Image();
         const fileName = uploadImageInput.files[0].name;
 
-        reader.onload = e => {
-            image.src = e.target.result;
+        reader.onload = event => {
+            image.src = event.target.result;
             image.alt = fileName.split(".")[0];
         };
 
-        uploadUnit.style.display = "none";
+        uploadContent .style.display = "none";
         submitProjet.style.backgroundColor = "#1D6154";
         projectUpload.style.display = "block";
         reader.readAsDataURL(uploadImageInput.files[0]);
         projectUpload.appendChild(image);
     }
-    tempImage = uploadImageInput.files[0];
 }
-
-async function POSTWork(work) {
-    let counter = 0;
-    for (let i = 0; i < formDataArray.length; i++) {
-    if (work.id == formDataArray[i].get("id")) {
-        counter = i;
-        formDataArray[i].delete("id");
-        }
-    }
-    try {
-        await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${getToken()}`,
-            Accept: "*/*",
-        },
-        body: formDataArray[counter],
-        });
-    } catch (error) {
-    console.log(error);
-    }
-}
-
-addProjectForm.addEventListener("submit", function(event) {
-    console.log("clicked");
-    event.preventDefault();
-
-    let title = getTitle();
-    let categoryId = getCategoryId();
-    let imageUrl = localStorage.getItem("imgUrl");
-    imageUrl = imageUrl.replaceAll('"', "");
-    if (title != "" && imageUrl != "") {
-        tempFormData = new FormData(this);
-        addNewWork(imageUrl, title, categoryId);
-        pushIntoFormDataArray(tempFormData);
-    }
-});
-
-// Appliquer les changements 
-async function applyChanges() {
-    modifiedWorks.forEach((modifiedWork) => {
-      if (modifiedWork.method == "POST") {
-        POSTWork(modifiedWork);
-      } else if (modifiedWork.method == "DELETE") {
-        DELETEWork(modifiedWork);
-      }
-    });
-}
-
-publishChangesBtn.onclick = function() {
-    applyChanges();
-};
