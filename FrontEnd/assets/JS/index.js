@@ -1,225 +1,122 @@
-// Lien serveur pour page HTML
-const worksURL = "http://localhost:5678/api/works";
-const categoriesURL = "http://localhost:5678/api/categories";
+getCategory();
+getWorks();
 
-// Variable commune const
-const gallery = document.getElementsByClassName("gallery")[0];
-let works;
-const galleryModal = document.querySelector(".gallerymodal");
-
-// Suppression des tous les projets dans le DOM
-function resetDOM(element) {
-    element.replaceChildren();
-}
-
-// Récupération de tous les projets par le serveur
-async function displayWork() {
-    await fetch(worksURL)
-    .then(function(response) {
-        if (response.ok) {
+// Récupération des catégories via l'API
+function getCategory() {
+    const catUrl = 'http://localhost:5678/api/categories';
+    fetch(catUrl)
+        .then((response) => {
             return response.json();
-        }
-    })
-    .then(function(value) {
-        works = value;
-        return works;
-    })
-    .catch(function(error) {
-        console.log("Une erreur sur la récupération des travaux est survenue");
-        console.log(error);
-    });
-}
-
-// Ajout de tous les projets sur le DOM
-function addAllWorks(works, element) {
-    works.forEach(work => {
-        addWork(work, element, work.title);
-    });
-}
-
-// Ajout des projets sur le DOM
-function addWork(works, element, title) {
-
-    let figure = document.createElement("figure");
-    figure.setAttribute("data-id", works.id);
-    let img = document.createElement("img");
-    let figcaption = document.createElement("figcaption");
-
-    // Ajout des images et des titres sur le DOM
-    element.appendChild(figure).appendChild(img)
-    .setAttribute("src", works.imageUrl);
-
-    img.setAttribute("alt", works.title);
-    img.setAttribute("crossorigin", "anonymous");
-    figure.appendChild(figcaption)
-    .innerHTML = title;
-    return figure;
-}
-
-// Récupération des catégories par le serveur
-async function getCategories() {
-    const categories = [];
-     await fetch(categoriesURL)
-    .then(function(response) {
-        if (response.ok) {
-            return response.json();
-        }
-    })
-    .then(function(value) {
-        value.forEach(category => {
-            categories.push(category);
-        });
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-    return categories;
-}
-
-// Ajout des catégories sur le DOM
-function addCategories(categories) {
-    let button = document.createElement("button");
-    let categoryElt = document.getElementsByClassName("filters")[0];
-    document.getElementsByClassName("filters")[0]
-    .appendChild(button)
-    .setAttribute("data-id", 0);
-    button.innerHTML = "Tous";
-
-    for (let i = 0; i < categories.length; i++) {
-        let button = document.createElement("button");
-        categoryElt.appendChild(button).setAttribute('data-id', categories[i].id);
-        button.innerHTML = categories[i].name;
-    }
-}
-
-// Ajout des event listeners pour les catégories
-function addEventToCategories(works, element) {
-    document.querySelectorAll(".filters button")
-    .forEach(filter => {
-        filter.addEventListener('click', function(value) {
-            let categoryId = value.target.dataset.id;
-            categoryId = parseInt(categoryId);
-
-            //filtres catégorie au click
-            filtersCategories(works, categoryId, element);
         })
-    });
+        .then((data) => {
+            const fragment = document.createDocumentFragment();
+            let categoryies = data;
+
+            localStorage.setItem('categoryies', JSON.stringify(data));
+            categoryies.forEach((category) => {
+                const link = document.createElement('a');
+                link.textContent = category.name;
+                link.onclick = function () {
+                    findByCategory(category.id);
+                    link.className.replace('active', '');
+                };
+                link.classList.add("subcat");
+                link.setAttribute("tabindex", "0");
+                fragment.appendChild(link);
+            });
+            const categorie = document.getElementById('category');
+            categorie.appendChild(fragment);
+        })
 }
 
-// Ajout des filtres catégories
-function filtersCategories(works, categoryId, element) {
-    resetDOM(gallery);
+function findByCategory(id) {
+    const works = JSON.parse(localStorage.getItem('worksedit'));
+    let worksList = [];
 
-    if (categoryId == 0) {
-        addAllWorks(works, element);
-    }
-    else {
-        works.forEach(work => {
-        if (work["categoryId"] == categoryId) {
-            addWork(work, element, work.title);
+    works.forEach((work) => {
+        if(work.categoryId == id) {
+            worksList.push(work);
         }
-        });
-    }
+    });
+    console.log(worksList);
+    createDocumentWorks(worksList);
 }
 
-// Execution des fonctions
-const promiseWorks = displayWork()
-.then(function() {
-    addAllWorks(works, gallery);
-    addAllWorks(works, galleryModal);
-    return works;
-})
+// Pour afficher tout les projets sur le filtre "Tous"
+function showAllWorks() {
+    const works = JSON.parse(localStorage.getItem('worksedit'));
+    createDocumentWorks(works);
+}
 
-.then(function(works) {
-    getCategories()
-    .then(function(categories) {
-        addCategories(categories);
-        addEventToCategories(works, gallery);
-    });
-    return works;
-})
+// Récupération des projets de l'API
+function getWorks() {
+    const worksUrl = 'http://localhost:5678/api/works';
 
-.catch(function(error) {
-    console.log(error);
-});
+    fetch(worksUrl)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            const fragment = document.createDocumentFragment();
+            let works = data;
+            localStorage.setItem('worksedit', JSON.stringify(data));
+            createDocumentWorks(works);
+        })
+}
+
+function createDocumentWorks(works) {
+    const fragment = document.createDocumentFragment();
+    const gallery = document.getElementsByClassName('gallery')[0];
+
+    gallery.innerHTML = ''; 
+    works.forEach((work) => {
+        const figure = document.createElement('figure');
+        const div = document.createElement('div');
+        const img = document.createElement('img');
+
+        img.src = work.imageUrl;
+        img.crossOrigin = 'anonymous';
+
+        const caption = document.createElement('figcaption')
+        caption.textContent = work.title;
+        fragment.appendChild(figure);
+        figure.appendChild(div);
+        div.appendChild(img);
+        div.appendChild(caption);
+    })
+    gallery.appendChild(fragment);
+}
 
 // Ajout des projets sur la boite modale
-function addWorkModal(work, element) {
-    let figure = document.createElement("figure");
-    let img = document.createElement("img");
-    let figcaption = document.createElement("figcaption");
-    let deleteBtn = document.createElement("i");
+function addWorkModal() {
+    const fragment = document.createDocumentFragment();
+    const galleryModal = document.getElementsByClassName('gallerymodal')[0];
+    galleryModal.innerHTML='';
 
-    // Ajout des images et des titres sur la boîte modale
-    element.appendChild(figure).appendChild(img)
-    .setAttribute("src", work.imageUrl);
+    const works = JSON.parse(localStorage.getItem('worksedit'));
 
-    img.setAttribute("alt", work.title);
-    img.setAttribute("crossorigin", "anonymous");
-    figure.appendChild(figcaption)
-    .innerHTML = work.title;
+    works.forEach((work) => {
+    const div = document.createElement('div');
+    div.id = "gallery_edit_img";
 
-    // Ajout des boutons pour supprimer
-    figure.appendChild(deleteBtn)
-    deleteBtn.classList.add("delete-btn");
-    deleteBtn.classList.add("fas");
-    deleteBtn.classList.add("fa-trash-can");
+    const img = document.createElement('img');
+    img.src = work.imageUrl;
+    img.crossOrigin = 'anonymous';
+    div.appendChild(img);
 
-    return figure;
-}
+    const i = document.createElement('i');
+    i.setAttribute("class", "fa fa-trash");
+    i.setAttribute("data-id", work.id);
+    i.setAttribute("onclick", "deleteWork(this, " + work.id + ")");
+    div.appendChild(i);
 
-async function renderModalGallery() {
-    // Supprime les projets existants dans la boîte modale
-    resetDOM(galleryModal);
+    const p = document.createElement('p');
+    p.textContent = 'éditer';
+    p.setAttribute("data-id", work.id);
+    div.appendChild(p);
 
-    // Récupération des projets pour la galerie modale
-    await fetch(worksURL)
-    .then(function(response) {
-        if (response.ok) {
-            return response.json();
-        }
-    })
-    .then(function(works) {
-        works.forEach(work => {
-            // Figure qui contient les projets
-            let modalFigure = document.createElement("figure");
-            modalFigure.setAttribute("data-id", work.id);
-
-            // Image pour les projets
-            let modalImg = document.createElement("img");
-            modalImg.setAttribute("src", work.imageUrl);
-            modalImg.setAttribute("alt", work.title);
-            modalImg.setAttribute("crossorigin", "anonymous");
-
-            // Ajout de l'image à la figure
-            modalFigure.appendChild(modalImg);
-
-            // Ajout de la légende à la figure 
-            modalFigure.appendChild(document.createElement("figcaption")).innerHTML = "éditer";
-
-            // Créer l'icone de la poubelle pour supprimer
-            let trashIcon = document.createElement("i");
-            trashIcon.classList.add("fa-solid", "fa-trash-can");
-            modalFigure.appendChild(trashIcon);
-
-            // Ajouter un événement de suppression de projet sur l'icône de la poubelle
-            trashIcon.addEventListener("click", async function () {
-
-                // Récupérer l'ID du projet en utilisant son attribut data-id
-                const id = modalFigure.getAttribute("data-id");
-
-                // Demander à l'utilisateur de confirmer la suppression
-                if (confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
-
-                    // Supprimer le projet en utilisant son ID
-                    await deleteWork(id);
-                }
-            });
-
-            galleryModal.appendChild(modalFigure);
-        });
-    })
-    .catch(function(error) {
-        console.log(error);
+    fragment.appendChild(div);
     });
+  
+    galleryModal.appendChild(fragment);
 }

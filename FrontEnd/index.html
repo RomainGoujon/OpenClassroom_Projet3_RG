@@ -26,9 +26,9 @@
 
 	<nav>
 		<ul>
-			<li><a href="index.html#projets">projets</a></li>
-            <li><a href="index.html#contact">contact</a></li>	
-			<li><a href="login.html">login</a></li>
+			<li><a href="index.html#projets" class="submenu">projets</a></li>
+            <li><a href="index.html#contact" class="submenu">contact</a></li>	
+			<li><a href="login.html" class="submenu">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -72,7 +72,9 @@
 			</div>
 		</div>
 
-		<div class="filters"></div>
+		<div id="category">
+			<a href="#" class="subcat active" tabindex="0" onclick="showAllWorks()">Tous </a>
+		</div>
 		<div class="gallery"></div>
 
 	</section>
@@ -109,6 +111,8 @@
 		</div>
 
 		<h2>Galerie photo</h2>
+		<div id="alert" class="alert alert-success" role="alert">
+		</div>
 		<div class="gallerymodal"></div>
 
 		<hr>
@@ -151,10 +155,9 @@
 				<input type="text" name="titre" id="titreAjout" required>
 				<label>Catégorie</label>
 				<select name="categorie" id="selectCategorie" required>
-					<option value="Selectionner">Sélectionner</option>
-					<option value="Objets">Objets</option>
-					<option value="Appartements">Appartements</option>
-					<option value="Hotels & restaurants">Hotels & restaurants</option>
+					<option value="1">Objets</option>
+					<option value="2">Appartements</option>
+					<option value="3">Hotels & restaurants</option>
 				</select>
 			</div>
 

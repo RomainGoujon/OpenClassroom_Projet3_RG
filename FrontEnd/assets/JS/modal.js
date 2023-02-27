@@ -1,6 +1,3 @@
-// Lien api
-const apiUrl = "http://localhost:5678/api";
-
 // Variables pour la modal suppression de projets
 const modalDeleteWork = document.querySelector("#modalsSuppr");
 const openGalleryModalBtn = document.querySelector("#projectEdit");
@@ -12,25 +9,26 @@ const openAddWork = document.querySelector("#AjoutPhoto");
 const previousBtn = document.querySelector(".precedent");
 const closeAddWorkModalBtn = document.querySelector("#fermer-ajout")
 
-// Variable pour background modal
-const backgroundModal = document.querySelector("#modals");
-
 // Variables pour upload une image
 const uploadImageInput = document.querySelector("#imageUpload");
 const projectUpload = document.querySelector("#previewImage");
 const uploadContent = document.querySelector("#previewdetails");
 const submitProjet = document.querySelector("#validerAjout");
+const backgroundPreview = document.querySelector(".AjoutPhotoContainer");
 
 const addProjectForm = document.querySelector("#ajout-form");
 
-// Bouton pour appliquer les changements
-const publishChangesBtn = document.querySelector("#changements");
+// Variable pour background modal
+const backgroundModal = document.querySelector("#modals");
+
+// Variable pour le bouton appliquer les changements
+const applyChanges = document.querySelector("#changements");
 
 // Fonction pour ouvrir modal galerie pour supprimer un projet et celle pour ajouter un projet
 function openGalleryModal() {
     modalDeleteWork.style.display = "flex";
     backgroundModal.style.display = "block";
-    renderModalGallery();
+    addWorkModal();
 }
 
 function openAddWorkModal() {
@@ -63,7 +61,7 @@ closeAddWorkModalBtn.addEventListener("click", closeAddWorkModal);
 previousBtn.addEventListener("click", function() {
     closeAddWorkModal();
     openGalleryModal();
-    renderModalGallery();
+    addWorkModal();
 });
 
 window.onclick = function (event) {
@@ -73,41 +71,46 @@ window.onclick = function (event) {
     }
 }
 
-// Variable pour controler les ajouts ou suppression
-let action = null;
 
 // Supprimer des photos
-async function deleteWork(id) {
-    const response = await fetch(apiUrl + "/works/{id}", {
+function deleteWork(event, id) {
+    fetch('http://localhost:5678/api/works/' + id, {
         method: "DELETE",
         headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${getToken()}`,
-            "Content-Type": "application/json",
+            'Accept': 'application/json',
+            'Authorization': getAuthorization(),
+            'Content-Type': 'application/json',
         },
+        params: {
+            'id': id
+        },
+    })
+    .then(() => {
+        const parentDiv = event.parentNode;
+        parentDiv.remove();
+         const alert = document.getElementById('alert');
+         alert.innerHTML = "Votre photo a été supprimé avec succès";
+         alert.style.display = "block";
+         setTimeout(function(){ alert.style.display = "none"; }, 5000);
+   
+    })
+    .catch((error) => {
+     console.error('Error:', error);
     });
-    console.log(response);
-    if (response.ok) {
-    // Supprimer l'élément correspondant dans le DOM
-        const element = document.querySelector(`[data-id="${id}"]`);
-        element.remove();
-        action = "delete";
-    } else {
-        console.log(`Erreur lors de la suppression du travail avec ID ${id}`);
-    }
 }
 
-// Fonction pour envoyer les données de la photo
+// Fonctions pour ajouter des projets
 async function sendWorkData(data) {
-    console.log("avant envoie api");
-    const response = await fetch(apiUrl + "/works", {
+   const postWorkUrl = 'http://localhost:5678/api/works';
+
+    const response = await fetch(postWorkUrl, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${getToken()}`
+            'Authorization': getAuthorization()
         },
         body: data,
     });
-    console.log("Apres reponse api");
+
     return response.json();
 }
 
@@ -136,7 +139,11 @@ async function handleFormSubmit(event) {
     try {
         const response = await sendWorkData(formData);
         console.log(response);
-        action = "add";
+        
+        const alert = document.getElementById('alert');
+        alert.innerHTML = "Votre photo a été ajouté avec succès";
+        alert.style.display = "block";
+        setTimeout(function(){ alert.style.display = "none"; }, 5000);
     } catch (error) {
         console.error("Erreur :", error);
     }
@@ -161,24 +168,18 @@ function uploadImage() {
             image.alt = fileName.split(".")[0];
         };
 
-        uploadContent .style.display = "none";
+        uploadContent.style.display = "none";
         submitProjet.style.backgroundColor = "#1D6154";
         projectUpload.style.display = "block";
+        backgroundPreview.style.backgroundColor = "#FFFFFF";
         reader.readAsDataURL(uploadImageInput.files[0]);
         projectUpload.appendChild(image);
     }
 }
 
-// Bouton pour publier les changements sur le site
-publishChangesBtn.addEventListener("click", function(event) {
+// Bouton pour appliquer les changements et donc fermer la boite modal
+applyChanges.addEventListener('click', function(event) {
     event.preventDefault();
-
-    if (action === "delete") {
-        deleteChanges();
-    } else if (action === "add") {
-        addChanges();
-    }
-
     closeAddWorkModal();
     closeGalleryModal();
 });

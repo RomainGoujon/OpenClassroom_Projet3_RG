@@ -2,7 +2,7 @@
 const modeEdition = document.querySelector(".mode-edition");
 const editBtn = document.querySelectorAll(".modifier");
 const logout = document.querySelector('[href="login.html"]');
-const filters = document.querySelectorAll(".filters");
+const filters = document.querySelectorAll("#category");
 
 // Si nous avons récupéré le token
 if (isConnected()) {
@@ -25,7 +25,7 @@ if (isConnected()) {
         event.preventDefault();
 
         localStorage.removeItem("userId");
-        localStorage.removeItem("token");
+        localStorage.removeItem("auth");
         window.location.reload();
     });
 }

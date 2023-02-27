@@ -2,48 +2,30 @@ const form = document.getElementsByClassName("form-login")[0].elements;
 const messageError = document.getElementById("msg-error");
 const loginURL = "http://localhost:5678/api/users/login";
 
-// Envoie des données de l'utilisateur
-function getUserLog() {
-const { email, password } = form;
-return { email: email.value, password: password.value };
-}
-
 // Se connecter lorque l'on clic sur le bouton
-form["submit-login"].addEventListener("click", async function (event) {
+form["submit-login"].addEventListener("click",function (event) {
 event.preventDefault();
 
-    const user = getUserLog();
-
-    try {
-        const response = await fetch(loginURL, {
+    fetch(loginURL, {
         method: "POST",
         headers: {
-        "Content-Type": "application/json",
+            'Accept': 'application/json',
+            "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify(user),
-        });
-
-        if (!response.ok) {
-            messageError.style.display = "flex";
-            return;
-        }
-        const data = await response.json();
-        if (data.userId) {
-            connecting(data);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-function connecting(data) {
-localStorage.setItem("userId", data.userId);
-localStorage.setItem("token", data.token);
-
-console.log(`Le token est : ${data.token}`);
-
-
-
-// Redirection vers la page d'accueil
-window.location.href = "index.html";
-}
+        body: JSON.stringify({
+            email: form.email.value,
+            password: form.password.value,
+        }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      
+      localStorage.setItem('auth', JSON.stringify(data));
+      
+      window.location = "index.html";
+      
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+})
