@@ -8,6 +8,13 @@ const filters = document.querySelectorAll("#category");
 if (isConnected()) {
     modeEdition.style.display = "flex";
 
+    const logo = document.querySelector("#logo");
+    logo.style.paddingTop = "25px";
+    logo.style.fontSize = "17px";
+
+    const navHeader = document.querySelector("#navHeader");
+    navHeader.style.paddingTop = "25px";
+
     for (let i = 0; i < filters.length; i++) {
         filters[i].style.display = "none";
     }

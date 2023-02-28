@@ -71,7 +71,7 @@ h1{
 	font-family: 'Syne';
 	font-size: 22px;
 	font-weight: 800;
-	color: #B1663C
+	color: #B1663C;
 }
 
 h1 > span {
@@ -92,7 +92,7 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
-
+	font-size: 16px;
 }
 
 nav li {
@@ -373,10 +373,6 @@ a:active {
 	position: absolute;
 	top: 0;
 	left: 0;
-}
-
-#header {
-	padding-top: 30px;
 }
 
 .logo-edition {
