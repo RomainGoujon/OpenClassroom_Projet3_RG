@@ -21,9 +21,6 @@ const addProjectForm = document.querySelector("#ajout-form");
 // Variable pour background modal
 const backgroundModal = document.querySelector("#modals");
 
-// Variable pour le bouton appliquer les changements
-const applyChanges = document.querySelector("#changements");
-
 // Fonction pour ouvrir modal galerie pour supprimer un projet et celle pour ajouter un projet
 function openGalleryModal() {
     modalDeleteWork.style.display = "flex";
@@ -91,8 +88,8 @@ function deleteWork(event, id) {
          const alert = document.getElementById('alert');
          alert.innerHTML = "Votre photo a été supprimé avec succès";
          alert.style.display = "block";
-         setTimeout(function(){ alert.style.display = "none"; }, 5000);
-   
+         setTimeout(function(){ alert.style.display = "none"; }, 3000);
+        
     })
     .catch((error) => {
      console.error('Error:', error);
@@ -144,6 +141,7 @@ async function handleFormSubmit(event) {
         alert.innerHTML = "Votre photo a été ajouté avec succès";
         alert.style.display = "block";
         setTimeout(function(){ alert.style.display = "none"; }, 5000);
+        
     } catch (error) {
         console.error("Erreur :", error);
     }
@@ -176,10 +174,3 @@ function uploadImage() {
         projectUpload.appendChild(image);
     }
 }
-
-// Bouton pour appliquer les changements et donc fermer la boite modal
-applyChanges.addEventListener('click', function(event) {
-    event.preventDefault();
-    closeAddWorkModal();
-    closeGalleryModal();
-});
