@@ -570,8 +570,9 @@ figcaption {
 }
 
 #previewImage {
-	width: 30rem;
+	width: 13rem;
 	display: none;
+	padding-bottom: 18px;
 }
 
 #previewImage img {

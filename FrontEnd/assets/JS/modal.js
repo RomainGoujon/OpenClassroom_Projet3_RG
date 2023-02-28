@@ -88,7 +88,7 @@ function deleteWork(event, id) {
          const alert = document.getElementById('alert');
          alert.innerHTML = "Votre photo a été supprimé avec succès";
          alert.style.display = "block";
-         setTimeout(function(){ alert.style.display = "none"; }, 3000);
+         setTimeout(() => { alert.style.display = "none"; }, 5000);
         
     })
     .catch((error) => {
