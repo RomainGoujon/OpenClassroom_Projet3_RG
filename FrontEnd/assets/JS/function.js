@@ -6,6 +6,6 @@ function getAuthorization() {
 
 // Fonction pour voir si l'utilisateur est connecté
 function isConnected() {
-    const connecting = getAuthorization() ? true : false;
-    return connecting
+  const connecting = getAuthorization() ? true : false;
+  return connecting;
 }

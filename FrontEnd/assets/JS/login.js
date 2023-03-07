@@ -6,6 +6,14 @@ const loginURL = "http://localhost:5678/api/users/login";
 form["submit-login"].addEventListener("click",function (event) {
 event.preventDefault();
 
+  // Validation du formulaire
+  if (form.email.value === "" || form.password.value === "") {
+    messageError.style.display = "flex";
+    return;
+  } else {
+    messageError.style.display = "none";
+  }
+
     fetch(loginURL, {
         method: "POST",
         headers: {
@@ -19,13 +27,17 @@ event.preventDefault();
     })
     .then((response) => response.json())
     .then((data) => {
-      
-      localStorage.setItem('auth', JSON.stringify(data));
-      
-      window.location = "index.html";
-      
+        // Stocker les informations d'authentification et rediriger
+        localStorage.setItem('auth', JSON.stringify(data));
+        const auth = JSON.parse(localStorage.getItem('auth'));
+        if (auth && auth.token) {
+          window.location = "index.html";
+        } else {
+          messageError.style.display = "flex";
+        }
     })
     .catch((error) => {
       console.error('Error:', error);
+      messageError.style.display = "flex";
     });
 })
